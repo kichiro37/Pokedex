@@ -23,7 +23,7 @@ export default function (/* { ssrContext } */) {
    			//pokemons.forEach(pokemon => {
    				//state.pokemons.push(pokemon)
    			//})
-   			console.log('FetchPokemons 1', state.pokemons)
+   			//console.log('FetchPokemons 1', state.pokemons)
    		},
    		updateNextUrl(state, pokeNextUrl) {
    			state.pokeNextUrl = pokeNextUrl
@@ -37,7 +37,7 @@ export default function (/* { ssrContext } */) {
    			//alert('GetPokemons')
    			axios.get(state.pokeNextUrl)
    			.then(resp => {
-   				console.log('GetPokemons' ,resp)
+   				//console.log('GetPokemons' ,resp)
    				commit('updateNextUrl', resp.data.next)
    				commit('FetchPokemons', resp.data.results)
    			})
