@@ -56,7 +56,21 @@ export default function (/* { ssrContext } */) {
    					console.log('getPokeInfo 1F', err)
    				})
    			})
-   		}
+   		},
+      GetPokeSpecies({}, speciesUrl) {
+        return new Promise ((resolve, reject) => {
+          console.log('getSpecies 0', speciesUrl)
+          axios.get(speciesUrl)
+          .then(resp => {
+            resolve(resp.data)
+            console.log('getSpecies 1T', resp.data)
+          })
+          .catch(err => {        
+            reject(err)
+            console.log('getSpecies 1F', err)
+          })
+        })
+      },
    	}
   })
 

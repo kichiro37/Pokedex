@@ -18,6 +18,7 @@
     <q-dialog
       v-model="isShowPokemon"
       @hide="HidePokemon"
+      narrow-indicator
       persistent
       :maximized="true"
     >
@@ -36,10 +37,10 @@
           	<div class="text-h3 text-center text-white text-capitalize bg-positive">{{pokeInfo.name}}</div>
         	</q-card-section>
         </div>
-        <q-page-container>
-         <div class="">
-    				<div class="" style="max-width: 100%">
-				      <q-card>
+        <q-page-container v-if="!isLoading" flat>
+         <div>
+    				<div>
+				      <div>
 				        <q-tab-panels class="bg-primary" v-model="tab" animated>
 				          <q-tab-panel name="information">
 				            <PokeInf 
@@ -74,13 +75,13 @@
 				          indicator-color="black"
 				          align="justify"
 				        >
-				          <q-tab name="information" icon="info" />
+				          <q-tab name="information" icon="info"  />
 				          <q-tab name="move" icon="edit" />
 				          <q-tab name="more" icon="add" />
 				          <q-tab name="menu" icon="more_horiz" />
 				        </q-tabs>
 				      </q-footer>
-				      </q-card>
+				      </div>
 				    </div>
 				  </div>
         </q-page-container>
@@ -113,7 +114,9 @@ export default {
   	return {
   		isShowPokemon: false,
   		pokeInfo: {},
-  		tab: 'information'
+  		pokeSpecies: {},
+  		tab: 'information',
+  		isLoading: true
   	}
   },
   methods: {
@@ -122,7 +125,8 @@ export default {
   	}),
   	...mapActions({
   		GetPokemons: 'GetPokemons',
-  		GetPokeInfo: 'GetPokeInfo'
+  		GetPokeInfo: 'GetPokeInfo',
+  		GetPokeSpecies: 'GetPokeSpecies'
   	}),
   	onGetPokemons (index, done) {
   		this.GetPokemons()
@@ -133,9 +137,14 @@ export default {
   	},
   	async ShowPokemon (pokeUrl) {
   		this.isShowPokemon = true
+  		this.isLoading = true
   		this.pokeInfo = await this.GetPokeInfo(pokeUrl)
+  		const speciesUrl = this.pokeInfo.species.url
+  		this.pokeSpecies = await this.GetPokeSpecies(speciesUrl)
+  		this.pokeInfo.species = {...this.pokeInfo.species, ...this.pokeSpecies}
   		console.log('PokeURL', pokeUrl)
-  	}
+  		this.isLoading = false
+  	},
   }
 }
 </script>
