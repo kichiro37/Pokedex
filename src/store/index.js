@@ -11,19 +11,35 @@ export default function (/* { ssrContext } */) {
    	state: {
    		vueInstalled: false, 
    		pokemons: [],
-      pokeNextUrl: '/pokemon'
+   		pokeNextUrl: '/pokemon',
+      pokeSearch: null
    	},
+    getters: {
+      pokemonsFilter: (state) => {
+        return state.pokemons.filter(pokemon => {
+          let re = new RegExp(state.pokeSearch)
+          return re.exec(pokemon.name) != null
+        })
+      }
+    },
    	mutations: {
+      updatePokeSearch(state, pokeSearch) {
+        state.pokeSearch = pokeSearch
+      },
    		updateVueInstalled(state, arg1) {
    			state.vueInstalled = arg1
    		},
-   		fetchPokemons(state, pokemons) {
+   		FetchPokemons(state, pokemons) {
    			state.pokemons = [...state.pokemons, ...pokemons]
-   			console.log('fetchPokemons 1', state.pokemons)
+   			//state.pokemons = pokemons
+   			//pokemons.forEach(pokemon => {
+   				//state.pokemons.push(pokemon)
+   			//})
+   			//console.log('FetchPokemons 1', state.pokemons)
    		},
-      updatePokeNextUrl(state, pokeNextUrl) {
-        state.pokeNextUrl = pokeNextUrl
-      }
+   		updateNextUrl(state, pokeNextUrl) {
+   			state.pokeNextUrl = pokeNextUrl
+   		}
    	},
    	actions: {
    		toggleVue({state, commit, dispatch}, arg1 ) {
@@ -32,9 +48,8 @@ export default function (/* { ssrContext } */) {
    		GetPokemons({state, commit}) {
    			axios.get(state.pokeNextUrl)
    			.then(resp => {
-          console.log('GetPokemons', resp)
-          commit('updatePokeNextUrl', resp.data.next)
-   				commit('fetchPokemons', resp.data.results)
+   				commit('updateNextUrl', resp.data.next)
+   				commit('FetchPokemons', resp.data.results)
    			})
    			.catch(err => {
    			})
@@ -51,7 +66,21 @@ export default function (/* { ssrContext } */) {
    					console.log('getPokeInfo 1F', err)
    				})
    			})
-   		}
+   		},
+      GetPokeSpecies({}, speciesUrl) {
+        return new Promise ((resolve, reject) => {
+          console.log('getSpecies 0', speciesUrl)
+          axios.get(speciesUrl)
+          .then(resp => {
+            resolve(resp.data)
+            console.log('getSpecies 1T', resp.data)
+          })
+          .catch(err => {        
+            reject(err)
+            console.log('getSpecies 1F', err)
+          })
+        })
+      },
    	}
   })
 
