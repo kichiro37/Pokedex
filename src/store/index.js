@@ -11,9 +11,22 @@ export default function (/* { ssrContext } */) {
    	state: {
    		vueInstalled: false, 
    		pokemons: [],
-   		pokeNextUrl: '/pokemon'
+   		pokeNextUrl: '/pokemon',
+      pokeSearch: null
    	},
+    getters: {
+      pokeFilter: state => {
+        console.log('pokeFilter 0')
+        return state.pokemons.filter(pokemon => {
+          let re = new RegExp(state.pokeSearch)
+          return re.exec(pokemon.name)
+        })
+      }
+    },
    	mutations: {
+      updatePokeSearch(state, pokeSearch) {
+        state.pokeSearch = pokeSearch
+      },
    		updateVueInstalled(state, arg1) {
    			state.vueInstalled = arg1
    		},

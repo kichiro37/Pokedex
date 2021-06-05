@@ -1,21 +1,30 @@
 <template>
-  <div class="text-center">
-    <div v-if="pokeInfo.species">
-      <q-card-section class="text-center">
-        <div class="text-h4 text-bold text-center text-white">MORE</div>
-          <q-card-section class="text-center">
-          <div class="text-capitalize q-ma-sm q-pa-md rounded-borders bg-white"> 
-          {{pokeInfo.species.genera['0'].genus}}
-          </div>
-      </q-card-section>
-      </q-card-section>
+  <div>
+    <div
+    class="rounded-borders q-pa-md text-center"
+    v-bind:class="`bg-`+pokeInfo.species.color.name"
+    >
+      <div class="text-h4 text-bold text-white">MORE</div>
+      <q-card-section class="">
+            <q-card-section class="text-center">
+              <div 
+              class="text-capitalize q-ma-sm q-pa-md rounded-borders bg-white"
+              >
+              {{pokeInfo.species.genera['0'].genus}}
+              </div>
+            </q-card-section>
+        </q-card-section>
     </div>
-    <div class="q-my-md">
-        <div class="text-h4 q-my-sm text-white">
+    <div
+    class="rounded-borders q-pa-md q-my-md text-center"
+    v-bind:class="`bg-`+pokeInfo.species.color.name"
+    > 
+      <div class="">
+        <div class="text-h4 text-white text-bold">
           TEXT
         </div>
          <q-card-section class="text-center">
-            <div class=" q-ma-sm q-pa-md rounded-borders bg-white"
+            <div class=" q-ma-sm q-pa-md bg-white rounded-borders"
             v-for="(text, pokeIndex) in pokeInfo.species.flavor_text_entries"
             v-bind:key="pokeIndex"
             v-bind:text="text"
@@ -24,7 +33,11 @@
             </div>
           </q-card-section>
       </div>
+    </div>
+    
   </div>
+ 
+    
     
 </template>
 

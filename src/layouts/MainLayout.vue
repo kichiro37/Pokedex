@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header elevated class="bg-red">
       <q-toolbar>
         <q-btn
           flat
@@ -12,10 +12,10 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          PokeDex
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>Bossun v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 

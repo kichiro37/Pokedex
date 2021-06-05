@@ -1,19 +1,28 @@
 <template>
   <q-page>
-	 <q-infinite-scroll @load="onGetPokemons" :offset="250">
+		<q-input v-model="pokeSearch" label="Search" @input="updatePokeSearch(pokeSearch)"/>
+			<q-list v-if="pokeSearch" bordered separator>
+	    	<q-item clickable v-ripple v-for="(pokemon, pokeIndex) in pokeFilter" v-bind:key="pokeIndex">
+	      	<q-item-section 
+	      	class="text-capitalize" @click="ShowPokemon(pokemon.url)">
+	      	{{pokemon.name}}
+	    		</q-item-section>
+	    	</q-item>
+	  	</q-list> 
+		<q-infinite-scroll v-else @load="onGetPokemons" :offset="250">
    		<q-list bordered separator>
       	<q-item clickable v-ripple v-for="(pokemon, pokeIndex) in pokemons" v-bind:key="pokeIndex">
         	<q-item-section 
         	class="text-capitalize" @click="ShowPokemon(pokemon.url)">
         	{{pokemon.name}}
-      	</q-item-section>
-      </q-item>
-    </q-list> 
-    <template v-slot:loading>
-      <div class="row justify-center q-my-md">
-        <q-spinner-dots color="primary" size="40px" />
-      </div>
-    </template>
+      		</q-item-section>
+      	</q-item>
+    	</q-list> 
+    	<template v-slot:loading>
+      	<div class="row justify-center q-my-md">
+        	<q-spinner-dots color="primary" size="40px" />
+      	</div>
+    	</template>
     </q-infinite-scroll>
     <q-dialog
       v-model="isShowPokemon"
@@ -21,8 +30,12 @@
       narrow-indicator
       persistent
       :maximized="true"
+      v-if="!isLoading"
     >
-      <q-card class="bg-primary">
+      <q-card
+     	v-if="pokeInfo.species"
+      v-bind:class="`bg-`+pokeInfo.species.color.name"
+      >
         <q-bar>
           <q-space />
           <q-btn dense flat icon="close" @click="isShowPokemon = false">
@@ -33,15 +46,16 @@
         	<q-card-section class="text-center">
           	<q-img class="gambar" v-if="pokeInfo.sprites" :src="pokeInfo.sprites.other['official-artwork'].front_default" />
         	</q-card-section>
-        	<q-card-section class="bg-positive">
-          	<div class="text-h3 text-center text-white text-capitalize bg-positive">{{pokeInfo.name}}</div>
+        	<q-card-section class="bg-white">
+          	<div class="text-h3 text-center text-capitalize">{{pokeInfo.name}}</div>
         	</q-card-section>
         </div>
-        <q-page-container v-if="!isLoading" flat>
+        <q-page-container flat>
          <div>
     				<div>
 				      <div>
-				        <q-tab-panels class="bg-primary" v-model="tab" animated>
+				        <q-tab-panels 
+				        class="bg-white" v-model="tab" animated>
 				          <q-tab-panel name="information">
 				            <PokeInf 
 				            	v-bind:pokeInfo="pokeInfo"
@@ -66,7 +80,7 @@
 				          </q-tab-panel>
 				        </q-tab-panels>
 				        <q-separator />
-				      <q-footer class="bg-blue text-white">
+				      <q-footer class="bg-grey text-white">
 				        <q-tabs
 				          v-model="tab"
 				          dense
@@ -75,10 +89,10 @@
 				          indicator-color="black"
 				          align="justify"
 				        >
-				          <q-tab name="information" icon="info"  />
-				          <q-tab name="move" icon="edit" />
-				          <q-tab name="more" icon="add" />
-				          <q-tab name="menu" icon="more_horiz" />
+				          <q-tab name="information" label="Info" icon="info"  />
+				          <q-tab name="move" label="Moves" icon="edit" />
+				          <q-tab name="more" label="More" icon="add" />
+				          <q-tab name="menu" label="Menu" icon="more_horiz" />
 				        </q-tabs>
 				      </q-footer>
 				      </div>
@@ -96,7 +110,7 @@ import PokeInf from 'components/PokeInf.vue'
 import Moves from 'components/Moves.vue'
 import More from 'components/More.vue'
 import Menu from 'components/Menu.vue'
-import {mapState, mapMutations, mapActions} from 'vuex'
+import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 export default {
   name: 'PageIndex',
   components: {
@@ -107,7 +121,10 @@ export default {
   },
   computed: {
   	...mapState({
-  		pokemons: 'pokemons'
+  		pokemons: 'pokemons',
+  	}),
+  	...mapGetters({
+  		pokeFilter: 'pokeFilter'
   	})
   },
   data() {
@@ -116,12 +133,13 @@ export default {
   		pokeInfo: {},
   		pokeSpecies: {},
   		tab: 'information',
-  		isLoading: true
+  		isLoading: true,
+  		pokeSearch: null
   	}
   },
   methods: {
   	...mapMutations({
-  		
+  		updatePokeSearch: 'updatePokeSearch'
   	}),
   	...mapActions({
   		GetPokemons: 'GetPokemons',
