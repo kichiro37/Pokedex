@@ -17,8 +17,8 @@ export default function (/* { ssrContext } */) {
     getters: {
       pokemonsFilter: (state) => {
         return state.pokemons.filter(pokemon => {
-          let re = new RegExp(state.pokeSearch)
-          return re.exec(pokemon.name) != null
+          let re = new RegExp(state.pokeSearch.toLowerCase())
+          return re.exec(pokemon.name.toLowerCase()) != null
         })
       }
     },
@@ -46,7 +46,7 @@ export default function (/* { ssrContext } */) {
    			commit('updateVueInstalled', !state.vueInstalled)
    		},
    		GetPokemons({state, commit}) {
-   			axios.get(state.pokeNextUrl)
+   			return axios.get(state.pokeNextUrl)
    			.then(resp => {
    				commit('updateNextUrl', resp.data.next)
    				commit('FetchPokemons', resp.data.results)

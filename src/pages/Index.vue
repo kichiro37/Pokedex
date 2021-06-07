@@ -144,8 +144,8 @@ export default {
   	...mapMutations({
   		updatePokeSearch: 'updatePokeSearch'
   	}),
-  	onGetPokemons (index, done) {
-  		this.GetPokemons()
+  	async onGetPokemons (index, done) {
+  		await this.GetPokemons()
   		done()
   	},
   	HidePokemon () {
