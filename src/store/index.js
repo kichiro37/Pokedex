@@ -17,8 +17,8 @@ export default function (/* { ssrContext } */) {
     getters: {
       pokemonsFilter: (state) => {
         return state.pokemons.filter(pokemon => {
-          let re = new RegExp(state.pokeSearch.toLowerCase())
-          return re.exec(pokemon.name.toLowerCase()) != null
+          let re = new RegExp(state.pokeSearch, 'i')
+          return re.exec(pokemon.name) != null
         })
       }
     },
