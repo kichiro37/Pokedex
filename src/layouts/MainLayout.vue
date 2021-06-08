@@ -15,7 +15,7 @@
           Quasar App
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <a @click="EasterEgg">Quasar v{{ $q.version }}</a>
       </q-toolbar>
     </q-header>
 
@@ -48,6 +48,7 @@
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
+import { mapMutations, mapActions } from 'vuex'
 
 const linksData = [
   {
@@ -100,7 +101,21 @@ export default {
   data () {
     return {
       leftDrawerOpen: false,
-      essentialLinks: linksData
+      essentialLinks: linksData,
+      EasterCounter: 0
+    }
+  },
+  methods: {
+    ...mapMutations({
+      pokeReverse: 'togglePokeReverse'
+    }),
+    ...mapActions({
+      GetPokemons: 'GetPokemons'
+    }),
+    EasterEgg () {
+      // Active reverse
+      this.pokeReverse()
+      this.GetPokemons()
     }
   }
 }

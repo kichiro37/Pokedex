@@ -12,7 +12,8 @@ export default function (/* { ssrContext } */) {
    		vueInstalled: false, 
    		pokemons: [],
    		pokeNextUrl: '/pokemon',
-      pokeSearch: null
+      pokeSearch: null,
+      pokeReverse: false
    	},
     getters: {
       pokemonsFilter: (state) => {
@@ -26,10 +27,35 @@ export default function (/* { ssrContext } */) {
       updatePokeSearch(state, pokeSearch) {
         state.pokeSearch = pokeSearch
       },
+      togglePokeReverse(state) {
+        state.pokeNextUrl = '/pokemon'
+        state.pokemons = []
+        state.pokeReverse = !state.pokeReverse
+      },
    		updateVueInstalled(state, arg1) {
    			state.vueInstalled = arg1
    		},
    		FetchPokemons(state, pokemons) {
+        const REVERSER_EASY = str => {
+          return str.split('').reverse().join('')
+        }
+        const REVERSER_MANUAL = str => {
+          let str_reversed = '' 
+          // for (let i = 0; i < str.length; i++) {
+          //   str_reversed += str[str.length - i - 1]
+          // }
+
+          for (let i = str.length; i > 0; i--) {
+            str_reversed += str[i-1]
+          }
+
+          return str_reversed
+        }
+        pokemons = pokemons.map(pokemon => {
+          const NAME_REVERSE = REVERSER_MANUAL(pokemon.name)
+          pokemon.name = state.pokeReverse ? NAME_REVERSE : pokemon.name
+          return pokemon
+        })
    			state.pokemons = [...state.pokemons, ...pokemons]
    			//state.pokemons = pokemons
    			//pokemons.forEach(pokemon => {
