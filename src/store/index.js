@@ -18,7 +18,7 @@ export default function (/* { ssrContext } */) {
       pokeFilter: state => {
         console.log('pokeFilter 0')
         return state.pokemons.filter(pokemon => {
-          let re = new RegExp(state.pokeSearch)
+          let re = new RegExp(state.pokeSearch, 'i')
           return re.exec(pokemon.name)
         })
       }
@@ -48,7 +48,7 @@ export default function (/* { ssrContext } */) {
    		},
    		GetPokemons({state, commit}) {
    			//alert('GetPokemons')
-   			axios.get(state.pokeNextUrl)
+   			return axios.get(state.pokeNextUrl)
    			.then(resp => {
    				//console.log('GetPokemons' ,resp)
    				commit('updateNextUrl', resp.data.next)
