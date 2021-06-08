@@ -15,7 +15,7 @@
           PokeDex
         </q-toolbar-title>
 
-        <div>Bossun v{{ $q.version }}</div>
+        <div @click="Reverse">Bossun v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
@@ -48,6 +48,7 @@
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
+import {mapMutations, mapActions} from 'vuex'
 
 const linksData = [
   {
@@ -101,6 +102,18 @@ export default {
     return {
       leftDrawerOpen: false,
       essentialLinks: linksData
+    }
+  },
+  methods: {
+    ...mapMutations({
+      toggleReverse: 'toggleReverse'
+    }),
+     ...mapActions({
+      GetPokemons: 'GetPokemons'
+    }),
+    Reverse() {
+      this.toggleReverse()
+      this.GetPokemons()
     }
   }
 }

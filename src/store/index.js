@@ -12,7 +12,8 @@ export default function (/* { ssrContext } */) {
    		vueInstalled: false, 
    		pokemons: [],
    		pokeNextUrl: '/pokemon',
-      pokeSearch: null
+      pokeSearch: null,
+      pokeReverse: false
    	},
     getters: {
       pokeFilter: state => {
@@ -24,6 +25,11 @@ export default function (/* { ssrContext } */) {
       }
     },
    	mutations: {
+      toggleReverse(state) {
+        state.pokemons = []
+        state.pokeNextUrl = '/pokemon'
+        state.pokeReverse = !state.pokeReverse
+      },
       updatePokeSearch(state, pokeSearch) {
         state.pokeSearch = pokeSearch
       },
@@ -31,12 +37,16 @@ export default function (/* { ssrContext } */) {
    			state.vueInstalled = arg1
    		},
    		FetchPokemons(state, pokemons) {
+        const pokemonReverse = (pokemon) => {
+         return pokemon.name.split('').reverse().join('')
+        }
+        if (state.pokeReverse) {
+          pokemons = pokemons.map(pokemon => {
+            pokemon.name = pokemonReverse(pokemon)
+            return pokemon
+          })
+        }
    			state.pokemons = [...state.pokemons, ...pokemons]
-   			//state.pokemons = pokemons
-   			//pokemons.forEach(pokemon => {
-   				//state.pokemons.push(pokemon)
-   			//})
-   			//console.log('FetchPokemons 1', state.pokemons)
    		},
    		updateNextUrl(state, pokeNextUrl) {
    			state.pokeNextUrl = pokeNextUrl
