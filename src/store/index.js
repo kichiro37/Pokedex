@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import _ from 'lodash'
 
 // import example from './module-example'
 
@@ -25,6 +26,18 @@ export default function (/* { ssrContext } */) {
       }
     },
    	mutations: {
+      sortPokemonID(state) {
+        state.pokemons = _.sortBy(state.pokemons, ['id'])
+        console.log(state.pokemons);
+      },
+      sortPokemonAsc(state) {
+        state.pokemons = _.sortBy(state.pokemons, ['name'])
+        console.log(state.pokemons);
+      },
+      sortPokemonDesc(state) {
+        state.pokemons = _.sortBy(state.pokemons, ['name']).reverse();
+        console.log(state.pokemons);
+      },
       toggleReverse(state) {
         state.pokemons = []
         state.pokeNextUrl = '/pokemon'

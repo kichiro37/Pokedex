@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          PokeDex
+          PokéSun
         </q-toolbar-title>
 
         <div @click="Reverse">Bossun v{{ $q.version }}</div>
@@ -28,9 +28,9 @@
       <q-list>
         <q-item-label
           header
-          class="text-grey-8"
+          class="text-red text-h3 text-weight-bold text-center"
         >
-          Essential Links
+          PokéSun
         </q-item-label>
         <EssentialLink
           v-for="link in essentialLinks"

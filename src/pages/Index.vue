@@ -1,14 +1,14 @@
 <template>
-  <q-page>
-		<q-input v-model="pokeSearch" label="Search" @input="updatePokeSearch(pokeSearch)"/>
-			<q-list v-if="pokeSearch" bordered separator>
-	    	<q-item clickable v-ripple v-for="(pokemon, pokeIndex) in pokeFilter" v-bind:key="pokeIndex">
-	      	<q-item-section 
-	      	class="text-capitalize" @click="ShowPokemon(pokemon.url)">
-	      	{{pokemon.name}}
-	    		</q-item-section>
-	    	</q-item>
-	  	</q-list> 
+  	<q-page>
+		<q-input v-if="search = true" v-model="pokeSearch" label="Search Pokemon" @input="updatePokeSearch(pokeSearch)"/>
+		<q-list v-if="pokeSearch" bordered separator>
+			<q-item clickable v-ripple v-for="(pokemon, pokeIndex) in pokeFilter" v-bind:key="pokeIndex">
+				<q-item-section 
+				class="text-capitalize" @click="ShowPokemon(pokemon.url)">
+				{{pokemon.name}}
+				</q-item-section>
+			</q-item>
+		</q-list>
 		<q-infinite-scroll v-else @load="onGetPokemons" :offset="250">
    		<q-list bordered separator>
       	<q-item clickable v-ripple v-for="(pokemon, pokeIndex) in pokemons" v-bind:key="pokeIndex">
@@ -43,64 +43,97 @@
           </q-btn>
         </q-bar>
         <div v-if="pokeInfo">
-        	<q-card-section class="text-center">
-          	<q-img class="gambar" v-if="pokeInfo.sprites" :src="pokeInfo.sprites.other['official-artwork'].front_default" />
-        	</q-card-section>
-        	<q-card-section class="bg-white">
-          	<div class="text-h3 text-center text-capitalize">{{pokeInfo.name}}</div>
-        	</q-card-section>
+			<div class="rounded-borders q-ma-md row"
+			v-bind:class="`bg-`+pokeInfo.species.color.name+`-3`"> 
+				<q-card-section class="col-6">
+					<div class="text-capitalize">
+						<span class="col text-h5 text-weight-bold text-left"> {{pokeInfo.name}} </span>
+						<span class="col text-center"> #{{pokeInfo.id}} </span>
+					</div>
+				</q-card-section>
+				<q-card-section class="col-6 text-center">
+					<q-img class="gambar" v-if="pokeInfo.sprites" :src="pokeInfo.sprites.other['official-artwork'].front_default" />
+				</q-card-section>
+				<q-card-section class="col">
+					<div class="text-capitalize text-left">
+						<span
+						class="garis rounded-borders q-pa-sm q-mr-sm text-center"
+						v-for="(type, pokeIndex) in pokeInfo.types"
+						v-bind:key="pokeIndex"
+						v-bind:type="type"
+						>
+							{{type.type.name}}
+						</span>
+					</div>
+				</q-card-section>
+			</div>
         </div>
-        <q-page-container flat>
-         <div>
-    				<div>
-				      <div>
-				        <q-tab-panels 
-				        class="bg-white" v-model="tab" animated>
-				          <q-tab-panel name="information">
-				            <PokeInf 
-				            	v-bind:pokeInfo="pokeInfo"
-				            />
-				          </q-tab-panel>
+        <div flat>
+          	<div>
+				<q-tab-panels 
+				v-model="tab" animated
+				v-bind:class="`bg-`+pokeInfo.species.color.name"
+				>
+					<q-tab-panel name="information">
+						<PokeInf 
+							v-bind:pokeInfo="pokeInfo"
+						/>
+					</q-tab-panel>
 
-				          <q-tab-panel name="move">
-				            <Moves 
-				            	v-bind:pokeInfo="pokeInfo"
-				            />
-				          </q-tab-panel>
+					<q-tab-panel name="move">
+						<Moves 
+							v-bind:pokeInfo="pokeInfo"
+						/>
+					</q-tab-panel>
 
-				          <q-tab-panel name="more">
-				            <More 
-				            	v-bind:pokeInfo="pokeInfo"
-				            />
-				          </q-tab-panel>
-				           <q-tab-panel name="menu">
-				            <Menu 
-				            	v-bind:pokeInfo="pokeInfo"
-				            />
-				          </q-tab-panel>
-				        </q-tab-panels>
-				        <q-separator />
-				      <q-footer class="bg-grey text-white">
-				        <q-tabs
-				          v-model="tab"
-				          dense
-				          class="white"
-				          active-color="black"
-				          indicator-color="black"
-				          align="justify"
-				        >
-				          <q-tab name="information" label="Info" icon="info"  />
-				          <q-tab name="move" label="Moves" icon="edit" />
-				          <q-tab name="more" label="More" icon="add" />
-				          <q-tab name="menu" label="Menu" icon="more_horiz" />
-				        </q-tabs>
-				      </q-footer>
-				      </div>
-				    </div>
-				  </div>
-        </q-page-container>
+					<q-tab-panel name="more">
+						<More 
+							v-bind:pokeInfo="pokeInfo"
+						/>
+					</q-tab-panel>
+					<q-tab-panel name="menu">
+						<Menu 
+							v-bind:pokeInfo="pokeInfo"
+						/>
+					</q-tab-panel>
+				</q-tab-panels>
+				<q-separator />
+				<q-footer class="bg-grey text-white">
+					<q-tabs
+						v-model="tab"
+						dense
+						class="white"
+						active-color="black"
+						indicator-color="black"
+						align="justify"
+					>
+						<q-tab name="information" label="Info" icon="info"  />
+						<q-tab name="move" label="Moves" icon="edit" />
+						<q-tab name="more" label="More" icon="add" />
+						<q-tab name="menu" label="Menu" icon="more_horiz" />
+					</q-tabs>
+				</q-footer>
+			</div>
+        </div>
       </q-card>
     </q-dialog>
+	<q-page-sticky position="bottom-right" :offset="[18, 18]">
+		 <div class="q-mt-md">
+      <q-fab
+        v-model="fab2"
+        external-label
+				label-position="left"
+        vertical-actions-align="left"
+        color="red"
+        icon="keyboard_arrow_up"
+        direction="up"
+      >
+	  	<q-fab-action label-position="left" external-label color="red" icon="search" label="Search" />
+        <q-fab-action label-position="left" external-label color="red" @click="sortPokeDesc" icon="sort_by_alpha" label="Sort Descending" />
+        <q-fab-action label-position="left" external-label color="red" @click="sortPokeAsc" icon="sort_by_alpha" label="Sort Ascending" />
+      </q-fab>
+    </div>
+	</q-page-sticky>
   </q-page>
 </template>
 
@@ -134,12 +167,16 @@ export default {
   		pokeSpecies: {},
   		tab: 'information',
   		isLoading: true,
-  		pokeSearch: null
+  		pokeSearch: null,
+		fab2: false
   	}
   },
   methods: {
   	...mapMutations({
-  		updatePokeSearch: 'updatePokeSearch'
+  		updatePokeSearch: 'updatePokeSearch',
+		sortPokemonAsc: 'sortPokemonAsc',
+		sortPokemonDesc: 'sortPokemonDesc',
+		sortPokemonID: 'sortPokemonID'
   	}),
   	...mapActions({
   		GetPokemons: 'GetPokemons',
@@ -153,6 +190,15 @@ export default {
   	HidePokemon () {
   		this.pokeInfo = {}
   	},
+	sortPokeAsc () {
+		this.sortPokemonAsc()
+	},
+	sortPokeDesc () {
+		this.sortPokemonDesc()
+	},
+	sortPokeID () {
+		this.sortPokemonID()
+	},
   	async ShowPokemon (pokeUrl) {
   		this.isShowPokemon = true
   		this.isLoading = true
@@ -166,8 +212,14 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .gambar {
-	width : 350px
+	width : 150px
+}
+.garis {
+	border : 1px solid black
+}
+.q-page-container {
+	padding-top: 0px
 }
 </style>
