@@ -63,7 +63,7 @@ export default function (/* { ssrContext } */) {
    		},
    		updateNextUrl(state, pokeNextUrl) {
    			state.pokeNextUrl = pokeNextUrl
-   		}
+   		},
    	},
    	actions: {
    		toggleVue({state, commit, dispatch}, arg1 ) {
@@ -73,9 +73,9 @@ export default function (/* { ssrContext } */) {
    			//alert('GetPokemons')
    			return axios.get(state.pokeNextUrl)
    			.then(resp => {
-   				//console.log('GetPokemons' ,resp)
    				commit('updateNextUrl', resp.data.next)
    				commit('FetchPokemons', resp.data.results)
+          console.log('GetPokemons' ,resp.data.results)
    			})
    			.catch(err => {
    			})

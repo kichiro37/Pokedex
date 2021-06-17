@@ -14,7 +14,7 @@
 					>
 						{{pokeInfo.species.flavor_text_entries[71].flavor_text}}
 					</div>
-	    	</div>
+	    		</div>
 				<div class="row text-center q-mt-lg q-gutter-sm">
 					<div class="garispokeinf rounded-borders col">
 						<div>
@@ -34,7 +34,7 @@
 					</div>
 				</div>
 			</q-card-section>
-	  </div>
+	  	</div>
 		<span class="text-weight-bold"> Abilities </span>
 		<div class="rounded-borders bg-white">
 			<q-card-section class="q-my-md">
@@ -48,7 +48,7 @@
 	    			</div>
 	    		</div>
 			</q-card-section>
-	  </div>
+	  	</div>
 		<span class="text-weight-bold"> Base Stats </span>
 		<div class="rounded-borders bg-white">
 			<q-card-section class="q-my-md">
@@ -79,7 +79,10 @@
 					</div>
 				</div>
 			</q-card-section>
-	  </div>
+	  	</div>
+		<div class="q-my-md">
+			.
+		</div>
 	</div>
   
 </template>
