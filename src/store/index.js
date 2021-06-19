@@ -26,8 +26,12 @@ export default function (/* { ssrContext } */) {
       }
     },
    	mutations: {
-      sortPokemonID(state) {
+      sortPokemonIdAsc(state) {
         state.pokemons = _.sortBy(state.pokemons, ['id'])
+        console.log(state.pokemons);
+      },
+       sortPokemonIdDesc(state) {
+        state.pokemons = _.sortBy(state.pokemons, ['id']).reverse();
         console.log(state.pokemons);
       },
       sortPokemonAsc(state) {
@@ -39,9 +43,16 @@ export default function (/* { ssrContext } */) {
         console.log(state.pokemons);
       },
       toggleReverse(state) {
-        state.pokemons = []
-        state.pokeNextUrl = '/pokemon'
         state.pokeReverse = !state.pokeReverse
+        let pokemons = []
+        const pokemonReverse = (pokemon) => {
+        return pokemon.name.split('').reverse().join('')
+        }
+          pokemons = state.pokemons.map(pokemon => {
+            pokemon.name = pokemonReverse(pokemon)
+            return pokemon
+          })
+        state.pokemons = pokemons
       },
       updatePokeSearch(state, pokeSearch) {
         state.pokeSearch = pokeSearch
@@ -50,15 +61,6 @@ export default function (/* { ssrContext } */) {
    			state.vueInstalled = arg1
    		},
    		FetchPokemons(state, pokemons) {
-        const pokemonReverse = (pokemon) => {
-         return pokemon.name.split('').reverse().join('')
-        }
-        if (state.pokeReverse) {
-          pokemons = pokemons.map(pokemon => {
-            pokemon.name = pokemonReverse(pokemon)
-            return pokemon
-          })
-        }
    			state.pokemons = [...state.pokemons, ...pokemons]
    		},
    		updateNextUrl(state, pokeNextUrl) {
@@ -69,16 +71,21 @@ export default function (/* { ssrContext } */) {
    		toggleVue({state, commit, dispatch}, arg1 ) {
    			commit('updateVueInstalled', !state.vueInstalled)
    		},
-   		GetPokemons({state, commit}) {
+   		GetPokemons({state, commit, dispatch}) {
    			//alert('GetPokemons')
-   			return axios.get(state.pokeNextUrl)
-   			.then(resp => {
-   				commit('updateNextUrl', resp.data.next)
-   				commit('FetchPokemons', resp.data.results)
-          console.log('GetPokemons' ,resp.data.results)
-   			})
-   			.catch(err => {
-   			})
+        return new Promise ((resolve, reject) => {
+          axios.get(state.pokeNextUrl)
+            .then(resp => {
+              commit('updateNextUrl', resp.data.next)
+              //commit('FetchPokemons', resp.data.results)
+              console.log('GetPokemons' ,resp.data.results)
+              resolve(resp.data.results)
+          })
+          .catch(err => {
+            reject()
+          })
+        })
+   			
    		},
    		GetPokeInfo ({}, pokeUrl) {
    			return new Promise ((resolve, reject) => {
